@@ -2,92 +2,112 @@
 @{
     ViewBag.Title = "Cadastrar Cliente";
 }
-
-<div class="card mt-4">
-    <div class="card-header bg-dark text-white">
-        Cadastro de Cliente
-    </div>
-    @using (Html.BeginForm("GravarCliente", "Cliente", FormMethod.Post))
-    {
-        <fieldset class="form-group">
-            <legend class="col-form-label col-sm-2 pt-0 p-2">
-                Dados pessoais
-            </legend>
-            <div class="form-row p-2">
-                <div class="form-group col-md-12">
-                    <label for="Nome">Nome do cliente</label>
-                    @Html.TextBoxFor(model => model.Nome, new { @class = "form-control mw-100", placeholder="Nome do cliente" })
-                </div>
-            </div>
-            <div class="form-row p-2">
-                <div class="form-group col-md-4">
-                    <label for="Documento">Número do documento</label>
-                    @Html.TextBoxFor(model => model.Documento, new { @class = "form-control mw-100", placeholder = "Número do documento" })
-                </div>
-                <div class="form-group col-md-2">
-                    <label for="DataNascimento">Data de nascimento</label>
-                    @Html.TextBoxFor(model => model.DataNascimento, new { @class = "form-control", placeholder = "Data de nascimento" })
-                </div>
-                <div class="form-group col-md-4">
-                    <label for="Telefone">Telefone</label>
-                    @Html.TextBoxFor(model => model.Telefone, new { @class = "form-control mw-100", placeholder = "Telefone" })
-                </div>
-                <div class="form-group col-md-2">
-                    <label for="Genero">Gênero</label>
-                    <select class="form-control w-auto" id="Genero" name="Genero">
-                        <option id="M" value="M">M</option>
-                        <option id="F" value="F">F</option>
-                    </select>
-                </div>
-            </div>
-        </fieldset>
-
-        <fieldset class="form-group">
-            <legend class="col-form-label col-sm-2 pt-0 p-2">
-                Endereço
-            </legend>
-            <div class="form-row p-2">
-                <div class="form-group col-md-2">
-                    <label for="CEP">CEP</label>
-                    <input type="text" id="CEP" name="CEP" class="form-control mw-100" placeholder="CEP" />
-                </div>
-                <div class="form-group col-md-6">
-                    <label for="Logradouro">Logradouro</label>
-                    <input type="text" id="Logradouro" name="Logradouro" class="form-control mw-100" placeholder="Logradouro" />
-                </div>
-                <div class="form-group col-md-2">
-                    <label for="Numero">Número</label>
-                    <input type="text" id="Numero" name="Numero" class="form-control mw-100" placeholder="Numero" />
-                </div>
-                <div class="form-group col-md-2">
-                    <label for="Complemento">Complemento</label>
-                    <input type="text" id="Complemento" name="Complemento" class="form-control mw-100" placeholder="Complemento" />
-                </div>
-            </div>
-            <div class="form-row p-2">
-                <div class="form-group col-md-6">
-                    <label for="Bairro">Bairro</label>
-                    <input type="text" id="Bairro" name="Bairro" class="form-control mw-100" placeholder="Bairro" />
-                </div>
-                <div class="form-group col-md-4">
-                    <label for="Cidade">Cidade</label>
-                    <input type="text" id="Cidade" name="Cidade" class="form-control mw-100" placeholder="Cidade" />
-                </div>
-                <div class="form-group col-md-2">
-                    <label for="UF">UF</label>
-                    <input type="text" id="UF" name="UF" class="form-control mw-100" placeholder="UF" />
-                </div>
-            </div>
-        </fieldset>
-
-        <div class="form-row p-2">
-            <div class="form-group col-md-6">
-                <button type="reset" class="btn btn-warning w-100">Limpar Campos</button>
-            </div>
-            <div class="form-group col-md-6">
-                <button type="submit" class="btn btn-primary w-100">Gravar Cliente</button>
-            </div>
+<div class="accordion">
+    <div class="card mt-4">
+        <div class="card-header bg-primary text-white">
+            <span class="collapsed" data-toggle="collapse" data-target="#cadastroCliente" aria-expanded="false" aria-controls="cadastroCliente" >Cadastro de Cliente</span>
         </div>
 
-    }
+        <div class="card-body collapse" id="cadastroCliente">
+            @using (Html.BeginForm("GravarCliente", "Cliente", FormMethod.Post))
+            {
+                <div class="form-row p-2">
+                    <div class="form-group col-md-12">
+                        <label for="Nome">Nome do cliente</label>
+                        @Html.TextBoxFor(model => model.Nome, new { @class = "form-control mw-100", placeholder = "Nome do cliente" })
+                    </div>
+                </div>
+                <div class="form-row p-2">
+                    <div class="form-group col-md-4">
+                        <label for="Documento">Número do documento</label>
+                        @Html.TextBoxFor(model => model.Documento, new { @class = "form-control mw-100", placeholder = "Número do documento" })
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="DataNascimento">Data de nascimento</label>
+                        @Html.TextBoxFor(model => model.DataNascimento, new { @class = "form-control", placeholder = "Data de nascimento" })
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="Telefone">Telefone</label>
+                        <select class="form-control mw-100">
+                            @foreach (string telefone in Model.Telefones)
+                            {
+                                <option value="@telefone">@telefone</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="Genero">Gênero</label>
+                        <select class="form-control w-auto" id="Genero" name="Genero">
+                            <option id="M" value="M">M</option>
+                            <option id="F" value="F">F</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row p-2">
+                    <div class="form-group col-md-6">
+                        <button type="reset" class="btn btn-warning w-100">Limpar Campos</button>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <button type="submit" class="btn btn-primary w-100">Gravar Cliente</button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
 </div>
+<div class="accordion">
+    <div class="card mt-4">
+        <div class="card-header bg-primary text-white">
+            <span class="collapsed" data-toggle="collapse" data-target="#cadastroEndereco" aria-expanded="false" aria-controls="cadastroEndereco">Cadastro de Endereço</span>
+        </div>
+        <div class="card-body collapse" id="cadastroEndereco">
+            @using (Html.BeginForm("GravarEndereco", "Cliente", FormMethod.Post))
+            {
+                <div class="form-row p-2">
+                    <div class="form-group col-md-2">
+                        <label for="CEP">CEP</label>
+                        <input type="text" id="CEP" name="CEP" class="form-control mw-100" placeholder="CEP" />
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="Logradouro">Logradouro</label>
+                        <input type="text" id="Logradouro" name="Logradouro" class="form-control mw-100" placeholder="Logradouro" />
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="Numero">Número</label>
+                        <input type="text" id="Numero" name="Numero" class="form-control mw-100" placeholder="Numero" />
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="Complemento">Complemento</label>
+                        <input type="text" id="Complemento" name="Complemento" class="form-control mw-100" placeholder="Complemento" />
+                    </div>
+                </div>
+                <div class="form-row p-2">
+                    <div class="form-group col-md-6">
+                        <label for="Bairro">Bairro</label>
+                        <input type="text" id="Bairro" name="Bairro" class="form-control mw-100" placeholder="Bairro" />
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="Cidade">Cidade</label>
+                        <input type="text" id="Cidade" name="Cidade" class="form-control mw-100" placeholder="Cidade" />
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="UF">UF</label>
+                        <input type="text" id="UF" name="UF" class="form-control mw-100" placeholder="UF" />
+                    </div>
+                </div>
+                <div class="form-row p-2">
+                    <div class="form-group col-md-6">
+                        <button type="reset" class="btn btn-warning w-100">Limpar Campos</button>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <button type="submit" class="btn btn-primary w-100">Gravar Endereço</button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@{
+    <script src="@Url.Content("~/scripts/cliente.js")"></script>
+}

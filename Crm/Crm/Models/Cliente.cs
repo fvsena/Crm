@@ -11,6 +11,7 @@ namespace Crm.Models
 {
     public class Cliente : Sql
     {
+        #region Propriedades públicas
         public int Codigo { get; set; }
 
         [Required]
@@ -24,15 +25,35 @@ namespace Crm.Models
         public string Genero { get; set; }
 
         [Required]
-        public string Telefone { get; set; }
-
+        public List<string> Telefones { get; set; } = new List<string>();
 
         public Endereco Endereco { get; set; }
+        #endregion
 
+        #region Construtores
         public Cliente()
         {
-             this.Endereco = new Endereco();
+            this.Endereco = new Endereco();
         }
+
+        public Cliente(int codigo)
+        {
+            List<SqlParameter> parametros = new List<SqlParameter>();
+            parametros.Add(new SqlParameter("@IdCliente", codigo));
+            DataSet ds = ExecuteDataset(csCrm, "sp_ObterCliente", parametros);
+            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+            {
+                foreach (DataRow dr in ds.Tables[0].Rows)
+                {
+                    this.Codigo = Convert.ToInt32(dr["Codigo"].ToString());
+                    this.Nome = dr["Nome"].ToString();
+                    this.Genero = dr["Genero"].ToString();
+                    this.Documento = dr["Documento"].ToString();
+                    this.DataNascimento = Convert.ToDateTime(dr["DataNascimento"].ToString());
+                }
+            }
+        } 
+        #endregion
 
         public static List<Cliente> ObterClientesTeste()
         {
@@ -95,7 +116,59 @@ namespace Crm.Models
             }
         }
 
-        public int GravarCliente()
+        public void ObterTelefones()
+        {
+            try
+            {
+                this.Telefones.Clear();
+                List<SqlParameter> parametros = new List<SqlParameter>();
+                parametros.Add(new SqlParameter("@IdCliente", this.Codigo));
+                DataSet ds = ExecuteDataset(csCrm, "sp_ObterTelefones", parametros);
+                if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                {
+                    foreach (DataRow dr in ds.Tables[0].Rows)
+                    {
+                        this.Telefones.Add(dr["Telefone"].ToString());
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public Endereco GravarEndereco()
+        {
+            try
+            {
+                List<SqlParameter> parametros = new List<SqlParameter>();
+                parametros.Add(new SqlParameter("@IdCliente", this.Codigo));
+                parametros.Add(new SqlParameter("@Cep", this.Endereco.CEP));
+                parametros.Add(new SqlParameter("@Logradouro", this.Endereco.Logradouro));
+                parametros.Add(new SqlParameter("@Numero", this.Endereco.Numero));
+                parametros.Add(new SqlParameter("@Bairro", this.Endereco.Bairro));
+                parametros.Add(new SqlParameter("@Complemento", this.Endereco.Complemento));
+                parametros.Add(new SqlParameter("@Cidade", this.Endereco.Cidade));
+                parametros.Add(new SqlParameter("@Uf", this.Endereco.UF));
+                DataSet ds = ExecuteDataset(csCrm, "sp_GravarEndereco", parametros);
+                if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                {
+                    if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                    {
+                        string Erro = ds.Tables[0].Rows[0]["ErrorMessage"].ToString();
+                        throw new Exception(Erro);
+                    }
+                }
+                return this.Endereco;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public Cliente GravarCliente()
         {
             try
             {
@@ -104,7 +177,20 @@ namespace Crm.Models
                 parametros.Add(new SqlParameter("@Genero", this.Genero));
                 parametros.Add(new SqlParameter("@Documento", this.Documento));
                 parametros.Add(new SqlParameter("@DataNascimento", this.DataNascimento));
-                return ExecuteCommand(csCrm, "sp_GravarCliente", parametros);
+                DataSet ds = ExecuteDataset(csCrm, "sp_GravarCliente", parametros);
+                if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                {
+                    try
+                    {
+                        this.Codigo = Convert.ToInt32(ds.Tables[0].Rows[0]["IdCustomer"].ToString());
+                    }
+                    catch
+                    {
+                        string Erro = ds.Tables[0].Rows[0]["ErrorMessage"].ToString();
+                        throw new Exception(Erro);
+                    }
+                }
+                return this;
             }
             catch (Exception ex)
             {
