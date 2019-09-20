@@ -22,3 +22,10 @@ function selecionaCliente(codigo) {
         console.log(data);
     });
 }
+
+function adicionarTelefone() {
+    var val = $("#txtTelefone").val();
+    console.log(val);
+    $("#Telefones").append(new Option(val, val));
+    $("#txtTelefone").val('');
+}

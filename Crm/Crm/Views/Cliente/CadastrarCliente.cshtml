@@ -18,17 +18,23 @@
                     </div>
                 </div>
                 <div class="form-row p-2">
-                    <div class="form-group col-md-4">
+                    <div class="form-group col-md-2">
                         <label for="Documento">Número do documento</label>
-                        @Html.TextBoxFor(model => model.Documento, new { @class = "form-control mw-100", placeholder = "Número do documento" })
+                        @Html.TextBoxFor(model => model.Documento, new { @class = "form-control mw-100", placeholder = "Documento" })
                     </div>
                     <div class="form-group col-md-2">
                         <label for="DataNascimento">Data de nascimento</label>
-                        @Html.TextBoxFor(model => model.DataNascimento, new { @class = "form-control", placeholder = "Data de nascimento" })
+                        @Html.TextBoxFor(model => model.DataNascimento, new { @class = "form-control", placeholder = "Nascimento" })
                     </div>
-                    <div class="form-group col-md-4">
+                    <div class="form-group col-md-2">
                         <label for="Telefone">Telefone</label>
-                        <select class="form-control mw-100">
+                        <input type="text" class="form-control" id="txtTelefone" name="txtTelefone" maxlength="11" />
+                    </div>
+                    <div class="form-group col-md-2">
+                        <input type="button" class="btn btn-primary align-bottom" value="Adicionar" onclick="adicionarTelefone()" />
+                    </div>
+                    <div class="form-group col-md-2">
+                        <select class="form-control mw-100 align-bottom"" id="Telefones" name="Telefones">
                             @foreach (string telefone in Model.Telefones)
                             {
                                 <option value="@telefone">@telefone</option>
@@ -55,6 +61,7 @@
         </div>
     </div>
 </div>
+
 <div class="accordion">
     <div class="card mt-4">
         <div class="card-header bg-primary text-white">
