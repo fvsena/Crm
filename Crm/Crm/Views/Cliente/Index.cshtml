@@ -11,17 +11,19 @@
         <th scope="col">Gênero</th>
         <th scope="col">Ação</th>
     </thead>
-    @foreach(Crm.Models.Cliente cliente in Model)
-    {
-        <tr>
-            <td>@cliente.Codigo</td>
-            <td>@cliente.Nome</td>
-            <td>@cliente.Documento</td>
-            <td>@cliente.DataNascimento</td>
-            <td>@cliente.Genero</td>
-            <td>@Html.ActionLink("Selecionar", "SelecionaCliente", "Cliente", new { cliente.Codigo, cliente.Nome }, new { @class = "btn btn-primary" })</td>
-        </tr>
-    }
+    <tbody>
+        @foreach (Crm.Models.Cliente cliente in Model)
+        {
+            <tr>
+                <td>@cliente.Codigo</td>
+                <td>@cliente.Nome</td>
+                <td>@cliente.Documento</td>
+                <td>@cliente.DataNascimento</td>
+                <td>@cliente.Genero</td>
+                <td>@Html.ActionLink("Selecionar", "SelecionaCliente", "Cliente", new { cliente.Codigo, cliente.Nome }, new { @class = "btn btn-primary" })</td>
+            </tr>
+        }
+    </tbody>
 </table>
 
 @{

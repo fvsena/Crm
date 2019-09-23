@@ -1,0 +1,29 @@
+﻿@model Crm.Models.Contato
+@{
+    ViewBag.Title = "NovoContato";
+}
+<div class="accordion">
+    <div class="card mt-4">
+        <div class="card-header bg-primary text-white">
+            <span data-toggle="collapse" data-target="#novoContato" aria-expanded="true" aria-controls="novoContato">
+                Novo Contato
+            </span>
+        </div>
+        <div class="card-body" id="novoContato">
+            @using (Html.BeginForm("GravarContato", "Contato", FormMethod.Post))
+            {
+                <div class="form-row">
+                    <div class="form-group col-12">
+                        <label for="Detalhe">Detalhe do contato:</label>
+                        <textarea name="Detalhe" id="Detalhe" class="form-control mw-100"></textarea>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <input type="submit" class="btn btn-primary" value="Gravar Contato" />
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

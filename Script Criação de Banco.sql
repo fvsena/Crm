@@ -173,7 +173,6 @@ ALTER TABLE Scheduling ADD CONSTRAINT FK_Scheduling_Occurrence FOREIGN KEY(IdOcc
 ALTER TABLE Scheduling ADD CONSTRAINT FK_Scheduling_Agent FOREIGN KEY(IdAgent) REFERENCES Agent(IdAgent)
 
 GO
-sp_GravarCliente 'Felipe Sena','M','1110481723998','1992-02-06',1
 ALTER PROCEDURE sp_GravarCliente
 	(
 		@Nome VARCHAR(100),
@@ -312,6 +311,24 @@ BEGIN
 		BirthDate DataNascimento
 	FROM
 		Customer WITH (NOLOCK)
+END
+
+CREATE PROCEDURE sp_ObterContatos	
+	(
+		@IdCliente INT
+	)
+AS
+BEGIN
+	SELECT
+		IdContact,
+		IdCustomer,
+		IdAgent,
+		ContactDate,
+		Detail
+	FROM
+		Contact WITH (NOLOCK)
+	WHERE
+		IdCustomer = @IdCliente
 END
 
 CREATE PROCEDURE sp_ObterCliente

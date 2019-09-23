@@ -1,0 +1,47 @@
+﻿@model List<Crm.Models.Contato>
+@{
+    ViewBag.Title = "Listar";
+}
+
+<div class="card mt-4">
+    <div class="card-body">
+        <div class="form-row">
+            <div class="form-group">
+                @Html.ActionLink("Novo contato", "NovoContato", "Contato", null, new { @class="btn btn-primary"})
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="accordion">
+    <div class="card mt-4">
+        <div class="card-header bg-dark text-white">
+            <span data-target="#contatos" data-toggle="collapse" aria-expanded="true" aria-controls="contatos">
+                Contatos
+            </span>
+        </div>
+        <div class="card-body" id="contatos">
+            <table class="table-bordered mt-4 w-100">
+                <thead class="thead-dark">
+                    <th scope="col">#</th>
+                    <th scope="col">Agente</th>
+                    <th scope="col">Data</th>
+                    <th scope="col">Detalhe</th>
+                </thead>
+                <tbody>
+                    @foreach (Crm.Models.Contato contato in Model)
+                    {
+                        <tr>
+                            <td>@contato.CodigoContato</td>
+                            <td>@contato.CodigoAgente</td>
+                            <td>@contato.DataContato</td>
+                            <td>@contato.Detalhe</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
