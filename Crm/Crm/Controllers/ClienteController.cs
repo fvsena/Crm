@@ -37,6 +37,7 @@ namespace Crm.Controllers
             {
                 this.cliente = new Cliente(Convert.ToInt32(Session["CodigoCliente"].ToString()));
                 this.cliente.ObterTelefones();
+                this.cliente.ObterEndereco();
                 return View("CadastrarCliente", this.cliente);
             }
             return View("CadastrarCliente", new Cliente());
@@ -45,14 +46,21 @@ namespace Crm.Controllers
         [HttpPost]
         public ActionResult GravarCliente(Cliente clienteView)
         {
-            cliente = clienteView.GravarCliente();
+            if (Session["CodigoCliente"] != null)
+            {
+                cliente = clienteView.GravarCliente(Convert.ToInt32(Session["CodigoCliente"]));
+            }
+            else
+            {
+                cliente = clienteView.GravarCliente();
+            }
             Session["CodigoCliente"] = cliente.Codigo;
             Session["NomeCliente"] = cliente.Nome;
             Response.Write("<script>alert(\"Cliente gravado com sucesso!\");</script>");
-            return View("CadastrarCliente");
+            return View("CadastrarCliente", cliente);
         }
 
-        public ActionResult GravarEndereco(string Cep, string Logradouro, string Numero, string Bairro, string Complemento, string Cidade, string Uf)
+        public ActionResult GravarEndereco(Cliente c)
         {
             if (Session["CodigoCliente"] == null)
             {
@@ -62,18 +70,18 @@ namespace Crm.Controllers
             cliente.Codigo = Convert.ToInt32(Session["CodigoCliente"].ToString());
             cliente.Endereco = new Endereco()
             {
-                CEP = Cep,
-                Logradouro = Logradouro,
-                Numero = Numero,
-                Bairro = Bairro,
-                Complemento = Complemento,
-                Cidade = Cidade,
-                UF = Uf
+                CEP = c.Endereco.CEP,
+                Logradouro = c.Endereco.Logradouro,
+                Numero = c.Endereco.Numero,
+                Bairro = c.Endereco.Bairro,
+                Complemento = c.Endereco.Complemento,
+                Cidade = c.Endereco.Cidade,
+                UF = c.Endereco.UF
             };
             cliente.GravarEndereco();
             
             Response.Write("<script>alert(\"Endereço gravado com sucesso!\");</script>");
-            return View("CadastrarCliente");
+            return View("CadastrarCliente", cliente);
         }
 
     }

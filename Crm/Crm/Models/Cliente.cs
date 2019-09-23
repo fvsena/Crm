@@ -6,6 +6,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace Crm.Models
 {
@@ -25,7 +26,7 @@ namespace Crm.Models
         public string Genero { get; set; }
 
         [Required]
-        public List<string> Telefones { get; set; } = new List<string>();
+        public ICollection<string> Telefones { get; set; } = new List<string>();
 
         public Endereco Endereco { get; set; }
         #endregion
@@ -34,6 +35,7 @@ namespace Crm.Models
         public Cliente()
         {
             this.Endereco = new Endereco();
+            this.Telefones = new List<string>();
         }
 
         public Cliente(int codigo)
@@ -120,7 +122,7 @@ namespace Crm.Models
         {
             try
             {
-                this.Telefones.Clear();
+                this.Telefones.ToList().Clear();
                 List<SqlParameter> parametros = new List<SqlParameter>();
                 parametros.Add(new SqlParameter("@IdCliente", this.Codigo));
                 DataSet ds = ExecuteDataset(csCrm, "sp_ObterTelefones", parametros);
@@ -129,6 +131,34 @@ namespace Crm.Models
                     foreach (DataRow dr in ds.Tables[0].Rows)
                     {
                         this.Telefones.Add(dr["Telefone"].ToString());
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public void ObterEndereco()
+        {
+            try
+            {
+                this.Endereco = new Endereco();
+                List<SqlParameter> parametros = new List<SqlParameter>();
+                parametros.Add(new SqlParameter("@IdCliente", this.Codigo));
+                DataSet ds = ExecuteDataset(csCrm, "sp_ObterEndereco", parametros);
+                if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                {
+                    foreach (DataRow dr in ds.Tables[0].Rows)
+                    {
+                        this.Endereco.CEP = dr["PostalCode"].ToString();
+                        this.Endereco.Logradouro = dr["PublicPlace"].ToString();
+                        this.Endereco.Numero = dr["Number"].ToString();
+                        this.Endereco.Bairro = dr["Neighborhood"].ToString();
+                        this.Endereco.Complemento = dr["Complement"].ToString();
+                        this.Endereco.Cidade = dr["City"].ToString();
+                        this.Endereco.UF = dr["FS"].ToString();
                     }
                 }
             }
@@ -168,7 +198,7 @@ namespace Crm.Models
             }
         }
 
-        public Cliente GravarCliente()
+        public Cliente GravarCliente(int CodigoCliente = 0)
         {
             try
             {
@@ -177,12 +207,20 @@ namespace Crm.Models
                 parametros.Add(new SqlParameter("@Genero", this.Genero));
                 parametros.Add(new SqlParameter("@Documento", this.Documento));
                 parametros.Add(new SqlParameter("@DataNascimento", this.DataNascimento));
+                if (CodigoCliente > 0)
+                {
+                    parametros.Add(new SqlParameter("@IdCliente", CodigoCliente));
+                }
                 DataSet ds = ExecuteDataset(csCrm, "sp_GravarCliente", parametros);
                 if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
                 {
                     try
                     {
                         this.Codigo = Convert.ToInt32(ds.Tables[0].Rows[0]["IdCustomer"].ToString());
+                        foreach (string telefone in this.Telefones)
+                        {
+                            GravarTelefone(this.Codigo, telefone);
+                        }
                     }
                     catch
                     {
@@ -191,6 +229,21 @@ namespace Crm.Models
                     }
                 }
                 return this;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public void GravarTelefone(int codigoCliente, string telefone)
+        {
+            try
+            {
+                List<SqlParameter> parametros = new List<SqlParameter>();
+                parametros.Add(new SqlParameter("@IdCliente", codigoCliente));
+                parametros.Add(new SqlParameter("@Telefone", telefone));
+                ExecuteCommand(csCrm, "sp_GravarTelefone", parametros);
             }
             catch (Exception ex)
             {

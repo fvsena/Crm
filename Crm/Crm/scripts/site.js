@@ -1,6 +1,4 @@
-﻿
-
-$('#CEP').blur(function () {
+﻿$('#Endereco_CEP').blur(function () {
     value = this.value;
     $.ajax({
         type: "GET",
@@ -8,9 +6,9 @@ $('#CEP').blur(function () {
         context: document.body,
         contentType: "application/json; charset=utf-8"
     }).done(function (data) {
-        $("#Logradouro").val(data.logradouro);
-        $("#Bairro").val(data.bairro);
-        $("#Cidade").val(data.localidade);
-        $("#UF").val(data.uf);
+        $("#Endereco_Logradouro").val(data.logradouro);
+        $("#Endereco_Bairro").val(data.bairro);
+        $("#Endereco_Cidade").val(data.localidade);
+        $("#Endereco_UF").val(data.uf);
     })
 });

@@ -150,6 +150,7 @@
     <Compile Include="Models\Cliente.cs" />
     <Compile Include="Models\Endereco.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\ClienteEndereco.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />

@@ -173,36 +173,55 @@ ALTER TABLE Scheduling ADD CONSTRAINT FK_Scheduling_Occurrence FOREIGN KEY(IdOcc
 ALTER TABLE Scheduling ADD CONSTRAINT FK_Scheduling_Agent FOREIGN KEY(IdAgent) REFERENCES Agent(IdAgent)
 
 GO
-
-CREATE PROCEDURE sp_GravarCliente
+sp_GravarCliente 'Felipe Sena','M','1110481723998','1992-02-06',1
+ALTER PROCEDURE sp_GravarCliente
 	(
 		@Nome VARCHAR(100),
 		@Genero CHAR(1),
 		@Documento VARCHAR(20),
-		@DataNascimento DATETIME
+		@DataNascimento DATETIME,
+		@IdCliente INT = NULL
 	)
 AS
 BEGIN
 	BEGIN TRANSACTION
 	BEGIN TRY
-		INSERT INTO Customer
-			(
-				Name,
-				Gender,
-				DocumentNumber,
-				BirthDate,
-				CustomerDate
-			)
-		OUTPUT
-			inserted.IdCustomer
-		VALUES
-			(
-				@Nome,
-				@Genero,
-				@Documento,
-				@DataNascimento,
-				GETDATE()
-			)
+		IF @IdCliente IS NOT NULL
+			BEGIN
+				UPDATE
+					Customer
+				SET
+					Name = @Nome,
+					Gender = @Genero,
+					DocumentNumber = @Documento,
+					BirthDate = @DataNascimento
+				OUTPUT
+					inserted.IdCustomer
+				WHERE
+					IdCustomer = @IdCliente
+			END
+		ELSE
+			BEGIN
+				INSERT INTO Customer
+				(
+					Name,
+					Gender,
+					DocumentNumber,
+					BirthDate,
+					CustomerDate
+				)
+				OUTPUT
+					inserted.IdCustomer
+				VALUES
+				(
+					@Nome,
+					@Genero,
+					@Documento,
+					@DataNascimento,
+					GETDATE()
+				)
+			END
+		
 		COMMIT TRANSACTION
 	END TRY
 	BEGIN CATCH
@@ -219,7 +238,7 @@ ALTER PROCEDURE sp_GravarEndereco
 		@Logradouro VARCHAR(200),
 		@Numero VARCHAR(20),
 		@Bairro VARCHAR(100),
-		@Complemento VARCHAR(200),
+		@Complemento VARCHAR(200) = NULL,
 		@Cidade VARCHAR(100),
 		@Uf CHAR(2)
 	)
@@ -227,30 +246,53 @@ AS
 BEGIN
 	BEGIN TRANSACTION
 	BEGIN TRY
-	INSERT INTO Address
-		(
-			IdCustomer,
-			PostalCode,
-			PublicPlace,
-			Number,
-			Neighborhood,
-			Complement,
-			City,
-			FS,
-			AddressDate
-		)
-	VALUES
-		(
-			@IdCliente,
-			@Cep,
-			@Logradouro,
-			@Numero,
-			@Bairro,
-			@Complemento,
-			@Cidade,
-			@Uf,
-			GETDATE()
-		)
+
+	DECLARE @CONT INT
+	SELECT @CONT = COUNT(0) FROM Address WITH (NOLOCK) WHERE IdCustomer = @IdCliente
+
+	IF @CONT > 0
+		BEGIN
+			UPDATE
+				Address
+			SET
+				PostalCode = @Cep,
+				PublicPlace = @Logradouro,
+				Number = @Numero,
+				Neighborhood = @Bairro,
+				Complement = @Complemento,
+				City = @Cidade,
+				FS = @Uf,
+				AddressDate = GETDATE()
+			WHERE
+				IdCustomer = @IdCliente
+		END
+	ELSE
+		BEGIN
+			INSERT INTO Address
+				(
+					IdCustomer,
+					PostalCode,
+					PublicPlace,
+					Number,
+					Neighborhood,
+					Complement,
+					City,
+					FS,
+					AddressDate
+				)
+			VALUES
+				(
+					@IdCliente,
+					@Cep,
+					@Logradouro,
+					@Numero,
+					@Bairro,
+					@Complemento,
+					@Cidade,
+					@Uf,
+					GETDATE()
+				)
+		END
 	COMMIT
 	END TRY
 	BEGIN CATCH
@@ -289,7 +331,34 @@ BEGIN
 	WHERE
 		IdCustomer = @IdCliente
 END
+ALTER PROCEDURE sp_GravarTelefone
+	(
+		@IdCliente INT,
+		@Telefone VARCHAR(11)
+	)
+AS
+BEGIN
+	DECLARE @CONT INT
+	SELECT @CONT = COUNT(0) FROM Telephone WITH (NOLOCK) WHERE IdCustomer = @IdCliente AND PhoneNumber = @Telefone
 
+	IF @CONT > 0
+		BEGIN
+			RETURN;
+		END
+
+	INSERT INTO Telephone
+		(
+			IdCustomer,
+			PhoneNumber,
+			Status
+		)
+	VALUES
+		(
+			@IdCliente,
+			@Telefone,
+			1
+		)
+END
 CREATE PROCEDURE sp_ObterTelefones
 	(
 		@IdCliente INT
