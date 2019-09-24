@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Crm.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -13,9 +14,15 @@ namespace Crm.Controllers
             return View("Login");
         }
 
-        public ActionResult Login()
+        public ActionResult Logon(Usuario usuario)
         {
-            return View();
+            if (usuario.ValidarLogin())
+            {
+                Session["login"] = usuario.Login;
+                Session["CodigoUsuario"] = usuario.Codigo;
+                return RedirectToAction("Index", "Cliente");
+            }
+            return View("Login");
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Crm.Models;
+﻿using Crm.Filters;
+using Crm.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,12 +12,14 @@ namespace Crm.Controllers
     {
         public Cliente cliente = new Cliente();
 
+        [AuthFilter]
         public ActionResult Index()
         {
             List<Cliente> clientes = cliente.ObterClientes();
             return View(clientes);
         }
 
+        [AuthFilter]
         public ActionResult SelecionaCliente(string Codigo, string Nome)
         {
             Session["CodigoCliente"] = Codigo;
@@ -24,6 +27,7 @@ namespace Crm.Controllers
             return RedirectToAction("CadastrarCliente");
         }
 
+        [AuthFilter]
         public ActionResult Limpar()
         {
             Session["CodigoCliente"] = null;
@@ -31,6 +35,7 @@ namespace Crm.Controllers
             return RedirectToAction("CadastrarCliente");
         }
 
+        [AuthFilter]
         public ActionResult CadastrarCliente()
         {
             if (Session["CodigoCliente"] != null)
@@ -43,6 +48,7 @@ namespace Crm.Controllers
             return View("CadastrarCliente", new Cliente());
         }
 
+        [AuthFilter]
         [HttpPost]
         public ActionResult GravarCliente(Cliente clienteView)
         {
@@ -60,6 +66,7 @@ namespace Crm.Controllers
             return View("CadastrarCliente", cliente);
         }
 
+        [AuthFilter]
         public ActionResult GravarEndereco(Cliente c)
         {
             if (Session["CodigoCliente"] == null)

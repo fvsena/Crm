@@ -16,12 +16,12 @@
 <body class="p-0">
 
     <div class="container body-content">
-        <div class="card mx-auto my-lg-5 w-50">
+        <div class="card mx-auto my-xl-5 w-50">
             <div class="card-header bg-primary text-white">
                 Autenticação - CRM
             </div>
             <div class="card-body">
-                @using (Html.BeginForm("Logon","Login", FormMethod.Post))
+                @using (Html.BeginForm("Logon", "Login", FormMethod.Post))
                 {
                     <div class="form-row">
                         <div class="form-group col-12">
@@ -32,12 +32,12 @@
                     <div class="form-row">
                         <div class="form-group col-12"">
                             <label for="Usuario">Senha</label>
-                            <input type="password" name="Senha" id="Senha" class="form-control mw-100" />
+                            <input type="password" name="Login" id="Login" class="form-control mw-100" />
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group col-12"">
-                            <input type="submit" class="btn btn-primary" value="Logar" />
+                            <input type="button" class="btn btn-primary" value="Logar" />
                         </div>
                     </div>
                 }
