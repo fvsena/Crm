@@ -1,0 +1,107 @@
+﻿@model Crm.Models.TipoOcorrencia
+@{
+    ViewBag.Title = "CadastroTipoOcorrencia";
+}
+
+<div class="accordion">
+    <div class="card mt-4">
+        <div class="card-header bg-primary text-white">
+            <span>Grupo de Ocorrência</span>
+        </div>
+        <div class="card-body" id="grupoOcorrencia">
+            @using (Html.BeginForm("GravarGrupo", "TipoOcorrencia", FormMethod.Post))
+            {
+                <div class="form-row">
+                    <div class="form-group col-12">
+                        <label for="Grupo">Grupo</label>
+                        @Html.TextBoxFor(x => Model.Grupo, null, new { @class = "form-control mw-100" })
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-4">
+                        <input type="submit" value="Gravar Grupo" class="btn btn-primary" />
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="accordion">
+    <div class="card mt-4">
+        <div class="card-header bg-primary text-white">
+            <span>Sub Grupo de Ocorrência</span>
+        </div>
+        <div class="card-body" id="subGrupoOcorrencia">
+            @using (Html.BeginForm("GravarSubGrupo", "TipoOcorrencia", FormMethod.Post))
+            {
+                <div class="form-row">
+                    <div class="form-group col-6">
+                        <label for="Grupos">Grupo</label>
+                        <select class="form-control mw-100" id="Grupos" name="Grupos">
+                            @foreach (Crm.Models.GrupoOcorrencia grupo in Model.Grupos)
+                            {
+                                <option value="@grupo.Id">@grupo.Nome</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group col-6">
+                        <label for="SubGrupo">Sub Grupo</label>
+                        @Html.TextBoxFor(x => Model.SubGrupo, null, new { @class = "form-control mw-100" })
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-4">
+                        <input type="submit" value="Gravar Sub Grupo" class="btn btn-primary" />
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="accordion">
+    <div class="card mt-4">
+        <div class="card-header bg-primary text-white">
+            <span>Sub Grupo de Ocorrência</span>
+        </div>
+        <div class="card-body" id="subGrupoOcorrencia">
+            @using (Html.BeginForm("GravarDetalheOcorrencia", "TipoOcorrencia", FormMethod.Post))
+            {
+                <div class="form-row">
+                    <div class="form-group col-4">
+                        <label for="Grupos_Detalhe">Grupo</label>
+                        <select class="form-control mw-100" id="Grupos_Detalhe" name="Grupos_Detalhe">
+                            @foreach (Crm.Models.GrupoOcorrencia grupo in Model.Grupos)
+                            {
+                                <option value="@grupo.Id">@grupo.Nome</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group col-4">
+                        <label for="SubGrupos">Sub Grupo</label>
+                        <select class="form-control mw-100" id="SubGrupos" name="SubGrupos">
+                            @foreach (Crm.Models.SubGrupo subGrupo in Model.SubGrupos)
+                            {
+                                <option value="@subGrupo.Id">@subGrupo.Nome</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group col-4">
+                        <label for="Detalhe">Detalhe Ocorrência</label>
+                        @Html.TextBoxFor(x => Model.Detalhe, null, new { @class = "form-control mw-100" })
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-4">
+                        <input type="submit" value="Gravar Detalhe Ocorrência" class="btn btn-primary" />
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@{
+    <script src="@Url.Content("~/scripts/TipoOcorrencia.js")"></script>
+}

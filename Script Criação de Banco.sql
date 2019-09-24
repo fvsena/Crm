@@ -300,6 +300,39 @@ BEGIN
 	END CATCH
 END
 
+CREATE PROCEDURE sp_GravarContato
+	(
+		@IdCliente INT,
+		@IdAgente INT,
+		@Detalhe VARCHAR(8000)
+	)
+AS
+BEGIN
+	BEGIN TRANSACTION
+	BEGIN TRY
+
+		INSERT INTO Contact
+			(
+				IdCustomer,
+				IdAgent,
+				ContactDate,
+				Detail
+			)
+		VALUES
+			(
+				@IdCliente,
+				@IdAgente,
+				GETDATE(),
+				@Detalhe
+			)
+	COMMIT
+	END TRY
+	BEGIN CATCH
+		SELECT ERROR_MESSAGE() AS ErrorMessage
+		ROLLBACK TRANSACTION
+	END CATCH
+END
+
 CREATE PROCEDURE sp_ObterClientes
 AS
 BEGIN
@@ -313,7 +346,7 @@ BEGIN
 		Customer WITH (NOLOCK)
 END
 
-CREATE PROCEDURE sp_ObterContatos	
+ALTER PROCEDURE sp_ObterContatos	
 	(
 		@IdCliente INT
 	)
@@ -322,11 +355,13 @@ BEGIN
 	SELECT
 		IdContact,
 		IdCustomer,
-		IdAgent,
+		Agent.IdAgent,
+		Agent.Name,
 		ContactDate,
 		Detail
 	FROM
 		Contact WITH (NOLOCK)
+	INNER JOIN Agent WITH (NOLOCK) ON Contact.IdAgent = Agent.IdAgent
 	WHERE
 		IdCustomer = @IdCliente
 END
@@ -410,8 +445,78 @@ BEGIN
 		IdCustomer = @IdCliente
 END
 
+CREATE PROCEDURE sp_ValidarLogin
+	(
+		@Login VARCHAR(20),
+		@Senha VARCHAR(20)
+	)
+AS
+BEGIN
+	SELECT
+		IdAgent
+	FROM
+		Agent WITH (NOLOCK)
+	WHERE
+		Login = @Login
+		AND Password = @Senha
+END
+
+SELECT
+	SubjectDetail.IdSubjectGroup IdGrupo,
+	SubjectDetail.IdSubjectSubGroup IdSubGrupo,
+	SubjectDetail.IdSubjectDetail IdDetalhe,
+	SubjectGroup.Name Grupo,
+	SubjectSubGroup.Name SubGrupo,
+	SubjectDetail.Name Detalhe
+FROM SubjectDetail WITH (NOLOCK)
+INNER JOIN SubjectGroup WITH (NOLOCK) ON SubjectDetail.IdSubjectGroup = SubjectGroup.IdSubjectGroup
+INNER JOIN SubjectSubGroup WITH (NOLOCK) ON SubjectDetail.IdSubjectGroup = SubjectSubGroup.IdSubjectGroup AND SubjectDetail.IdSubjectSubGroup = SubjectSubGroup.IdSubjectSubGroup
+
+CREATE PROCEDURE sp_ObterGrupoOcorrencia
+AS
+BEGIN
+	SELECT
+		Name Grupo,
+		IdSubjectGroup IdGrupo
+	FROM
+		SubjectGroup WITH (NOLOCK)
+END
+
+ALTER PROCEDURE sp_ObterSubGrupoOcorrencia
+	(
+		@IdGrupo INT
+	)
+AS
+BEGIN
+	SELECT
+		Name SubGrupo,
+		IdSubjectSubGroup IdSubGrupo
+	FROM
+		SubjectSubGroup WITH (NOLOCK)
+	WHERE
+		IdSubjectGroup = @IdGrupo
+END
+
+ALTER PROCEDURE sp_ObterDetalheOcorrencia
+	(
+		@IdGrupo INT,
+		@IdSubGrupo INT
+	)
+AS
+BEGIN
+	SELECT
+		Name Detalhe,
+		IdSubjectDetail IdDetalhe
+	FROM
+		SubjectDetail WITH (NOLOCK)
+	WHERE
+		IdSubjectGroup = @IdGrupo
+		AND IdSubjectSubGroup = @IdSubGrupo
+END
+
 SELECT * FROM Customer	
 SELECT * FROM Address
 SELECT * FROM Telephone
+SELECT * FROM Agent
 
-INSERT INTO Telephone VALUES (1,'11989287765',1)
+--INSERT INTO Telephone VALUES (1,'11989287765',1)
