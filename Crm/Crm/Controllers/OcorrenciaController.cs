@@ -50,11 +50,6 @@ namespace Crm.Controllers
 
         public ActionResult GravarOcorrencia(string Grupos, string SubGrupos, string Detalhes, string Descricao)
         {
-            Response.Write($"Grupo: {Grupos}");
-            Response.Write($"SubGrupo: {SubGrupos}");
-            Response.Write($"Detalhe: {Detalhes}");
-            Response.Write($"Mensagem: {Descricao}");
-            Response.End();
             return RedirectToAction("Listar");
         }
     }

@@ -85,5 +85,10 @@ namespace Crm.Models
                 }
             }
         }
+
+        public void GravarOcorrencia()
+        {
+
+        }
     }
 }
