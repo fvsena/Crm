@@ -42,7 +42,7 @@ namespace Crm.Models
         {
             SubGrupos.Clear();
             List<SqlParameter> parametros = new List<SqlParameter>();
-            parametros.Add(new SqlParameter("@IdGrupo", this.CodigoSubGrupo));
+            parametros.Add(new SqlParameter("@IdGrupo", this.CodigoGrupo));
             DataSet ds = ExecuteDataset(csCrm, "sp_ObterSubGrupoOcorrencia", parametros);
             if (ds.Tables.Count > 0)
             {
@@ -70,6 +70,15 @@ namespace Crm.Models
             parametros.Add(new SqlParameter("@Grupo", this.CodigoGrupo));
             parametros.Add(new SqlParameter("@SubGrupo", this.SubGrupo));
             ExecuteCommand(csCrm, "sp_GravarSubGrupoOcorrencia", parametros);
+        }
+
+        public void GravarDetalheOcorrencia()
+        {
+            List<SqlParameter> parametros = new List<SqlParameter>();
+            parametros.Add(new SqlParameter("@Grupo", this.CodigoGrupo));
+            parametros.Add(new SqlParameter("@SubGrupo", this.CodigoSubGrupo));
+            parametros.Add(new SqlParameter("@Detalhe", this.Detalhe));
+            ExecuteCommand(csCrm, "sp_GravarDetalheOcorrencia", parametros);
         }
     }
 }

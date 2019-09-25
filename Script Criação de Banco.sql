@@ -518,5 +518,101 @@ SELECT * FROM Customer
 SELECT * FROM Address
 SELECT * FROM Telephone
 SELECT * FROM Agent
+SELECT * FROM SubjectGroup
+SELECT * FROM SubjectSubGroup
+SELECT * FROM SubjectDetail
 
 --INSERT INTO Telephone VALUES (1,'11989287765',1)
+
+
+
+CREATE PROCEDURE sp_GravarGrupoOcorrencia
+	(
+		@Grupo VARCHAR(50)
+	)
+AS
+BEGIN
+	DECLARE @CONT INT
+	SELECT @CONT = COUNT(Name) FROM SubjectGroup WITH (NOLOCK) WHERE Name = @Grupo
+
+	IF @CONT > 0
+		BEGIN
+			RETURN
+		END
+
+	INSERT INTO SubjectGroup
+		(
+			Name
+		)
+	VALUES
+		(
+			@Grupo
+		)
+END
+
+ALTER PROCEDURE sp_GravarSubGrupoOcorrencia
+	(
+		@Grupo INT,
+		@SubGrupo VARCHAR(50)
+	)
+AS
+BEGIN
+	DECLARE @CONT INT
+	SELECT @CONT = COUNT(Name) FROM SubjectSubGroup WITH (NOLOCK) WHERE IdSubjectGroup = @Grupo AND Name = @SubGrupo
+
+	IF @CONT > 0
+		BEGIN
+			RETURN
+		END
+
+	DECLARE @CodigoSubGrupo INT
+	SELECT @CodigoSubGrupo = ISNULL(MAX(IdSubjectSubGroup),0)+1 FROM SubjectSubGroup WITH (NOLOCK) WHERE IdSubjectGroup = @Grupo
+
+	INSERT INTO SubjectSubGroup
+		(
+			IdSubjectSubGroup,
+			IdSubjectGroup,
+			Name
+		)
+	VALUES
+		(
+			@CodigoSubGrupo,
+			@Grupo,
+			@SubGrupo
+		)
+END
+
+ALTER PROCEDURE sp_GravarDetalheOcorrencia
+	(
+		@Grupo INT,
+		@SubGrupo INT,
+		@Detalhe VARCHAR(100)
+	)
+AS
+BEGIN
+	DECLARE @CONT INT
+	SELECT @CONT = COUNT(Name) FROM SubjectDetail WITH (NOLOCK) WHERE IdSubjectGroup = @Grupo AND IdSubjectSubGroup = @SubGrupo AND Name = @Detalhe
+
+	IF @CONT > 0
+		BEGIN
+			RETURN
+		END
+
+	DECLARE @CodigoDetalhe INT
+	SELECT @CodigoDetalhe = ISNULL(MAX(IdSubjectDetail),0)+1 FROM SubjectDetail WITH (NOLOCK) WHERE IdSubjectGroup = @Grupo AND IdSubjectSubGroup = @SubGrupo
+	
+	INSERT INTO SubjectDetail
+		(
+			IdSubjectGroup,
+			IdSubjectSubGroup,
+			IdSubjectDetail,
+			Name
+		)
+	VALUES
+		(
+			@Grupo,
+			@SubGrupo,
+			@CodigoDetalhe,
+			@Detalhe
+		)
+END

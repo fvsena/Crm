@@ -90,3 +90,5 @@ C:\Users\felipe.sena\Documents\git\Crm\Crm\Crm\bin\System.Web.Mvc.xml
 C:\Users\felipe.sena\Documents\git\Crm\Crm\Crm\obj\Debug\Crm.dll
 C:\Users\felipe.sena\Documents\git\Crm\Crm\Crm\obj\Debug\Crm.pdb
 C:\Users\felipe.sena\Documents\git\Crm\Crm\Crm\obj\Debug\Crm.csprojResolveAssemblyReference.cache
+C:\Users\felipe.sena\Documents\git\Crm\Crm\Crm\bin\Newtonsoft.Json.dll
+C:\Users\felipe.sena\Documents\git\Crm\Crm\Crm\bin\Newtonsoft.Json.xml
