@@ -6,9 +6,9 @@
 <div class="accordion">
     <div class="card mt-4">
         <div class="card-header bg-primary text-white">
-            <span>Grupo de Ocorrência</span>
+            <span data-toggle="collapse" data-target="#grupoOcorrencia" aria-expanded="false" aria-controls="grupoOcorrencia">Grupo de Ocorrência</span>
         </div>
-        <div class="card-body" id="grupoOcorrencia">
+        <div class="card-body collapse" id="grupoOcorrencia">
             @using (Html.BeginForm("GravarGrupo", "TipoOcorrencia", FormMethod.Post))
             {
                 <div class="form-row">
@@ -30,9 +30,9 @@
 <div class="accordion">
     <div class="card mt-4">
         <div class="card-header bg-primary text-white">
-            <span>Sub Grupo de Ocorrência</span>
+            <span data-toggle="collapse" data-target="#subGrupoOcorrencia" aria-expanded="false" aria-controls="subGrupoOcorrencia">Sub Grupo de Ocorrência</span>
         </div>
-        <div class="card-body" id="subGrupoOcorrencia">
+        <div class="card-body collapse" id="subGrupoOcorrencia">
             @using (Html.BeginForm("GravarSubGrupo", "TipoOcorrencia", FormMethod.Post))
             {
                 <div class="form-row">
@@ -63,9 +63,9 @@
 <div class="accordion">
     <div class="card mt-4">
         <div class="card-header bg-primary text-white">
-            <span>Detalhe de Ocorrência</span>
+            <span data-toggle="collapse" data-target="#detalheOcorrencia" aria-expanded="false" aria-controls="detalheOcorrencia">Detalhe de Ocorrência</span>
         </div>
-        <div class="card-body" id="subGrupoOcorrencia">
+        <div class="card-body collapse" id="detalheOcorrencia">
             @using (Html.BeginForm("GravarDetalheOcorrencia", "TipoOcorrencia", FormMethod.Post))
             {
                 <div class="form-row">

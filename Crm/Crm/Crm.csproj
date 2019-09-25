@@ -138,6 +138,7 @@
     <Content Include="scripts\jquery.validate.js" />
     <Content Include="scripts\jquery.validate.min.js" />
     <Content Include="scripts\modernizr-2.6.2.js" />
+    <Content Include="scripts\Ocorrencia.js" />
     <Content Include="scripts\site.js" />
     <Content Include="scripts\TipoOcorrencia.js" />
     <Content Include="Web.config">
@@ -150,6 +151,7 @@
     <Compile Include="Controllers\ClienteController.cs" />
     <Compile Include="Controllers\ContatoController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\OcorrenciaController.cs" />
     <Compile Include="Controllers\TipoOcorrenciaController.cs" />
     <Compile Include="Filters\AuthFilter.cs" />
     <Compile Include="Global.asax.cs">
@@ -161,6 +163,7 @@
     <Compile Include="Models\DetalheOcorrencia.cs" />
     <Compile Include="Models\Endereco.cs" />
     <Compile Include="Models\GrupoOcorrencia.cs" />
+    <Compile Include="Models\Ocorrencia.cs" />
     <Compile Include="Models\SubGrupo.cs" />
     <Compile Include="Models\TipoOcorrencia.cs" />
     <Compile Include="Models\Usuario.cs" />
@@ -186,6 +189,8 @@
     <Content Include="Views\Login\Login.cshtml" />
     <Content Include="Views\Login\Logon.cshtml" />
     <Content Include="Views\TipoOcorrencia\CadastroTipoOcorrencia.cshtml" />
+    <Content Include="Views\Ocorrencia\Listar.cshtml" />
+    <Content Include="Views\Ocorrencia\NovaOcorrencia.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

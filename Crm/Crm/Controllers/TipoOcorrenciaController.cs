@@ -1,4 +1,5 @@
-﻿using Crm.Models;
+﻿using Crm.Filters;
+using Crm.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -12,23 +13,27 @@ namespace Crm.Controllers
     {
         TipoOcorrencia TipoOcorrencia = new TipoOcorrencia();
 
+        [AuthFilter]
         public ActionResult Index()
         {
             return RedirectToAction("CadastroTipoOcorrencia");
         }
 
+        [AuthFilter]
         public ActionResult CadastroTipoOcorrencia()
         {
             TipoOcorrencia.CarregaOcorrencias();
             return View("CadastroTipoOcorrencia", TipoOcorrencia);
         }
 
+        [AuthFilter]
         public ActionResult GravarGrupo(TipoOcorrencia tipoOcorrencia)
         {
             tipoOcorrencia.GravarGrupoOcorrencia();
             return RedirectToAction("CadastroTipoOcorrencia");
         }
 
+        [AuthFilter]
         public ActionResult GravarSubGrupo(string Grupos, string SubGrupo)
         {
             this.TipoOcorrencia.CodigoGrupo = Convert.ToInt32(Grupos);
@@ -37,6 +42,7 @@ namespace Crm.Controllers
             return RedirectToAction("CadastroTipoOcorrencia");
         }
 
+        [AuthFilter]
         [HttpGet]
         public string ObterSubGrupos(string IdGrupo)
         {
@@ -45,6 +51,7 @@ namespace Crm.Controllers
             return JsonConvert.SerializeObject(TipoOcorrencia.SubGrupos);
         }
 
+        [AuthFilter]
         public ActionResult GravarDetalheOcorrencia(string Grupos_Detalhe, string SubGrupos, string Detalhe)
         {
             TipoOcorrencia.CodigoGrupo = Convert.ToInt32(Grupos_Detalhe);

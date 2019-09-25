@@ -1,0 +1,52 @@
+﻿@model Crm.Models.Ocorrencia
+@{
+    ViewBag.Title = "NovaOcorrencia";
+}
+
+<div class="accordion">
+    <div class="card">
+        <div class="card-header"></div>
+        <div class="card-body">
+            @using (Html.BeginForm("GravarOcorrencia","Ocorrencia",FormMethod.Post))
+            {
+                <div class="form-row">
+                    <div class="form-group col-4">
+                        <select class="form-control mw-100" id="Grupos" name="Grupos">
+                            <option value="0">--Selecione--</option>
+                            @foreach (Crm.Models.GrupoOcorrencia grupo in Model.Grupos)
+                            {
+                                <option value="@grupo.Id">@grupo.Nome</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group col-4">
+                        <select class="form-control mw-100" id="SubGrupos" name="SubGrupos">
+                            <option value="0">--Selecione--</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-4">
+                        <select class="form-control mw-100" id="Detalhes" name="Detalhes">
+                            <option value="0">--Selecione--</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-12">
+                        <label for="Descricao">Descrição</label>
+                        <textarea id="Descricao" name="Descricao" class="form-control mw-100" rows="4" placeholder="Descrição da ocorrência"></textarea>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-12 align-content-end">
+                        <input type="submit" class="btn btn-primary" value="Gravar Ocorrência" />
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+@{
+    <script src="@Url.Content("~/scripts/Ocorrencia.js")"></script>
+}
