@@ -1,7 +1,34 @@
-﻿@{
+﻿@model Crm.Models.Ocorrencia
+@{
     ViewBag.Title = "Nova Atualização";
 }
 <div class="card">
     <div class="card-header"></div>
-    <div class="card-body"></div>
+    <div class="card-body">
+        @using (Html.BeginForm("GravarAtualizacao", "Ocorrencia", FormMethod.Post))
+        {
+            <div class="row">
+                <div class="col-2">
+                    <label for="CodigoOcorrencia">Ocorrência</label>
+                    <input type="text" class="form-control w-100" id="CodigoOcorrencia" name="CodigoOcorrencia" disabled="disabled" value="@Model.Codigo" />
+                </div>
+                <div class="col-4 mw-100">
+                    <label for="TipoAtualizacao">Tipo de Atualização</label>
+                    <select class="form-control w-100" id="TipoAtualizacao" name="TipoAtualizacao">
+                        <option value="2">Atualização</option>
+                        <option value="3">Fechamento</option>
+                    </select>
+                </div>
+                <div class="col-6 mw-100">
+                    <label for="Mensagem">Mensagem</label>
+                    <textarea class="form-control w-100" rows="3" id="Mensagem" name="Mensagem"></textarea>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <input type="submit" class="btn btn-primary" value="Gravar" />
+                </div>
+            </div>
+        }
+    </div>
 </div>

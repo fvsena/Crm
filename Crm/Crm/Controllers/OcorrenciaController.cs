@@ -70,7 +70,15 @@ namespace Crm.Controllers
 
         public ActionResult NovaAtualizacao(int Codigo)
         {
-            return View();
+            this.Ocorrencia.Codigo = Codigo;
+            return View("NovaAtualizacao", this.Ocorrencia);
+        }
+
+        public ActionResult GravarAtualizacao(string CodigoOcorrencia = null, string TipoAtualizacao = null, string Mensagem = null)
+        {
+            var IdCliente = Session["CodigoCliente"];
+            var NomeCliente = Session["NomeCliente"];
+            return RedirectToAction("AcessarOcorrencia", "Ocorrencia", new { IdCliente, NomeCliente });
         }
     }
 }
