@@ -20,7 +20,15 @@ namespace Crm.Controllers
 
         public ActionResult Listar()
         {
-            return View();
+            return View("Listar", Ocorrencia.ObterOcorrencias());
+        }
+
+        public ActionResult AcessarOcorrencia(int Codigo, int IdCliente, string NomeCliente)
+        {
+            Session["CodigoCliente"] = IdCliente;
+            Session["NomeCliente"] = NomeCliente;
+            Ocorrencia = Ocorrencia.BuscarOcorrencia(Codigo);
+            return View("AcessarOcorrencia", Ocorrencia);
         }
 
         public ActionResult NovaOcorrencia()
@@ -50,6 +58,13 @@ namespace Crm.Controllers
 
         public ActionResult GravarOcorrencia(string Grupos, string SubGrupos, string Detalhes, string Descricao)
         {
+            Ocorrencia.IdAgente = Convert.ToInt32(Session["CodigoUsuario"].ToString());
+            Ocorrencia.IdCliente = Convert.ToInt32(Session["CodigoCliente"].ToString());
+            Ocorrencia.CodigoGrupo = Convert.ToInt32(Grupos);
+            Ocorrencia.CodigoSubGrupo = Convert.ToInt32(SubGrupos);
+            Ocorrencia.CodigoDetalhe = Convert.ToInt32(Detalhes);
+            Ocorrencia.Descricao = Descricao;
+            Ocorrencia.GravarOcorrencia();
             return RedirectToAction("Listar");
         }
     }

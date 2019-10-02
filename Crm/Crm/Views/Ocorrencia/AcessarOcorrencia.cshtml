@@ -1,0 +1,23 @@
+﻿@model Crm.Models.Ocorrencia
+@{
+    ViewBag.Title = $"Detalhe da Ocorrência: {Model.Codigo.ToString()}";
+}
+
+<div class="card">
+    <div class="card-body">
+        <div class="form-row">
+            <div class="form-group col-4">
+                <label for="grupo">Grupo</label>
+                @Html.TextBoxFor(x => Model.Grupo, new { @class = "form-control", disabled = "disabled", value = Model.Grupo })
+            </div>
+            <div class="form-group col-4">
+                <label for="grupo">Sub Grupo</label>
+                @Html.TextBoxFor(x => Model.SubGrupo, new { @class = "form-control", disabled = "disabled", value = Model.Grupo })
+            </div>
+            <div class="form-group col-4">
+                <label for="grupo">Detalhe</label>
+                @Html.TextBoxFor(x => Model.Detalhe, new { @class = "form-control ", disabled="disabled", value = Model.Grupo })
+            </div>
+        </div>
+    </div>
+</div>

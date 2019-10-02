@@ -26,6 +26,7 @@ namespace Crm.Models
         public string Status { get; set; }
         public string Descricao { get; set; }
 
+        public List<AtualizacaoOcorrencia> Atualizacoes { get; set; } = new List<AtualizacaoOcorrencia>();
         public List<GrupoOcorrencia> Grupos { get; set; } = new List<GrupoOcorrencia>();
         public List<SubGrupo> SubGrupos { get; set; } = new List<SubGrupo>();
         public List<DetalheOcorrencia> Detalhes { get; set; } = new List<DetalheOcorrencia>();
@@ -86,9 +87,85 @@ namespace Crm.Models
             }
         }
 
+        public List<Ocorrencia> ObterOcorrencias()
+        {
+            List<Ocorrencia> ocorrencias = new List<Ocorrencia>();
+            List<SqlParameter> parametros = new List<SqlParameter>();
+            parametros.Add(new SqlParameter("@Quantidade", 100));
+            DataSet ds = ExecuteDataset(csCrm, "sp_ObterOcorrencias", parametros);
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                ocorrencias.Add(new Ocorrencia()
+                {
+                    Codigo = Convert.ToInt32(dr["IdOcorrencia"].ToString()),
+                    IdCliente = Convert.ToInt32(dr["IdCliente"].ToString()),
+                    DataAbertura = Convert.ToDateTime(dr["DataAbertura"].ToString()),
+                    NomeCliente = dr["Cliente"].ToString(),
+                    NomeAgente = dr["Agente"].ToString(),
+                    Grupo = dr["Grupo"].ToString(),
+                    SubGrupo = dr["SubGrupo"].ToString(),
+                    Detalhe = dr["Detalhe"].ToString(),
+                    Descricao = dr["UltimaAtualizacao"].ToString()
+                });
+            }
+            return ocorrencias;
+        }
+
         public void GravarOcorrencia()
         {
+            if (this.CodigoGrupo.Equals(0) || this.CodigoSubGrupo.Equals(0) || this.CodigoDetalhe.Equals(0) || string.IsNullOrWhiteSpace(this.Descricao))
+            {
+                return;
+            }
+            List<SqlParameter> parametros = new List<SqlParameter>();
+            parametros.Add(new SqlParameter("@IdCliente", this.IdCliente));
+            parametros.Add(new SqlParameter("@IdAgente", this.IdAgente));
+            parametros.Add(new SqlParameter("@CodigoGrupo", this.CodigoGrupo));
+            parametros.Add(new SqlParameter("@CodigoSubGrupo", this.CodigoSubGrupo));
+            parametros.Add(new SqlParameter("@CodigoDetalhe", this.CodigoDetalhe));
+            parametros.Add(new SqlParameter("@Mensagem", this.Descricao));
+            DataSet ds = ExecuteDataset(csCrm, "sp_GravarOcorrencia", parametros);
+            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+            {
+                string Erro = ds.Tables[0].Rows[0]["ErrorMessage"].ToString();
+                throw new Exception(Erro);
+            }
+        }
 
+        public Ocorrencia BuscarOcorrencia(int codigo)
+        {
+            Ocorrencia ocorrencia = new Ocorrencia();
+            List<SqlParameter> parametros = new List<SqlParameter>();
+            parametros.Add(new SqlParameter("@Codigo", codigo));
+            DataSet ds = ExecuteDataset(csCrm, "sp_BuscarOcorrencia", parametros);
+            if (ds.Tables.Count > 1)
+            {
+                foreach (DataRow dr in ds.Tables[0].Rows)
+                {
+                    ocorrencia.Codigo = Convert.ToInt32(dr["IdOcorrencia"]);
+                    ocorrencia.IdCliente = Convert.ToInt32(dr["IdCliente"].ToString());
+                    ocorrencia.DataAbertura = Convert.ToDateTime(dr["DataAbertura"].ToString());
+                    ocorrencia.NomeCliente = dr["Cliente"].ToString();
+                    ocorrencia.NomeAgente = dr["Agente"].ToString();
+                    ocorrencia.Grupo = dr["Grupo"].ToString();
+                    ocorrencia.SubGrupo = dr["SubGrupo"].ToString();
+                    ocorrencia.Detalhe = dr["Detalhe"].ToString();
+                }
+
+                foreach (DataRow dr in ds.Tables[1].Rows)
+                {
+                    ocorrencia.Atualizacoes.Add(new AtualizacaoOcorrencia()
+                    {
+                        Codigo = Convert.ToInt32(dr["IdAtualizacao"].ToString()),
+                        DataAtualizacao = Convert.ToDateTime(dr["DataAtualizacao"].ToString()),
+                        CodigoAgente = Convert.ToInt32(dr["IdAgente"]),
+                        NomeAgente = dr["Agente"].ToString(),
+                        TipoAtualizacao = dr["TipoAtualizacao"].ToString(),
+                        Mensagem = dr["Mensagem"].ToString()
+                    });
+                }
+            }
+            return ocorrencia;
         }
     }
 }

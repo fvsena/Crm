@@ -9,9 +9,30 @@
         <div class="card-body">
             <table class="table table-bordered">
                 <thead>
-
+                    <th scope="col">Data de Abertura</th>
+                    <th scope="col">Cliente</th>
+                    <th scope="col">Agente</th>
+                    <th scope="col">Grupo</th>
+                    <th scope="col">Sub Grupo</th>
+                    <th scope="col">Detalhe</th>
+                    <th scope="col">Última Atualização</th>
+                    <th scope="col"></th>
                 </thead>
-                <tbody></tbody>
+                <tbody>
+                    @foreach (Crm.Models.Ocorrencia ocorrencia in Model)
+                    {
+                        <tr>
+                            <td>@ocorrencia.DataAbertura.ToString("dd/MM/yyyy hh:mm")</td>
+                            <td>@ocorrencia.NomeCliente</td>
+                            <td>@ocorrencia.NomeAgente</td>
+                            <td>@ocorrencia.Grupo</td>
+                            <td>@ocorrencia.SubGrupo</td>
+                            <td>@ocorrencia.Detalhe</td>
+                            <td>@ocorrencia.Descricao</td>
+                            <td>@Html.ActionLink("Acessar", "AcessarOcorrencia", "Ocorrencia", new { ocorrencia.Codigo, ocorrencia.IdCliente, ocorrencia.NomeCliente }, null)</td>
+                        </tr>
+                    }
+                </tbody>
             </table>
         </div>
     </div>

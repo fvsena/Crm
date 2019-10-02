@@ -616,3 +616,108 @@ BEGIN
 			@Detalhe
 		)
 END
+
+SELECT * FROM Occurrence
+SELECT * FROM OccurrenceStatus
+SELECT * FROM OccurrenceUpdate
+SELECT * FROM OccurrenceUpdateType
+
+CREATE PROCEDURE sp_GravarOcorrencia
+	(
+		@IdCliente INT,
+		@IdAgente INT,
+		@CodigoGrupo INT,
+		@CodigoSubGrupo INT,
+		@CodigoDetalhe INT,
+		@Mensagem VARCHAR(255)
+	)
+AS
+BEGIN
+	BEGIN TRY
+		BEGIN TRANSACTION
+			DECLARE @IdOcorrencia INT
+			INSERT INTO Occurrence
+				(
+					IdCustomer,
+					IdAgent,
+					OccurrenceDate,
+					IdSubjectGroup,
+					IdSubjectSubGroup,
+					IdSubjectDetail,
+					IdOccurrenceStatus
+				)
+			VALUES
+				(
+					@IdCliente,
+					@IdAgente,
+					GETDATE(),
+					@CodigoGrupo,
+					@CodigoSubGrupo,
+					@CodigoDetalhe,
+					1
+				)
+
+			SET @IdOcorrencia = SCOPE_IDENTITY()
+
+			INSERT INTO OccurrenceUpdate
+				(
+					IdOccurrenceUpdateType,
+					IdOccurrence,
+					IdAgent,
+					UpdateDate,
+					UpdateMessage
+				)
+			VALUES
+				(
+					1,
+					@IdOcorrencia,
+					@IdAgente,
+					GETDATE(),
+					@Mensagem
+				)
+		COMMIT
+	END TRY
+	BEGIN CATCH
+		ROLLBACK TRANSACTION
+		SELECT ERROR_MESSAGE() AS ErrorMessage
+	END CATCH
+	
+END
+
+ALTER PROCEDURE sp_ObterOcorrencias
+	(
+		@Quantidade INT = 10
+	)
+AS
+BEGIN
+	SELECT TOP (@Quantidade)
+		Occurrence.IdOccurrence AS [IdOcorrencia],
+		Occurrence.OccurrenceDate AS [DataAbertura],
+		Customer.Name AS [Cliente],
+		Agent.Name AS [Agente],
+		SubjectGroup.Name AS [Grupo],
+		SubjectSubGroup.Name AS [SubGrupo],
+		SubjectDetail.Name AS [Detalhe],
+		OccurrenceUpdate.UpdateMessage AS [UltimaAtualizacao]
+	FROM
+		Occurrence WITH (NOLOCK)
+	INNER JOIN Agent WITH (NOLOCK) ON Occurrence.IdAgent = Agent.IdAgent
+	INNER JOIN Customer WITH (NOLOCK) ON Occurrence.IdCustomer = Customer.IdCustomer
+	INNER JOIN SubjectGroup WITH (NOLOCK) ON Occurrence.IdSubjectGroup = SubjectGroup.IdSubjectGroup
+	INNER JOIN SubjectSubGroup WITH (NOLOCK) ON Occurrence.IdSubjectGroup = SubjectSubGroup.IdSubjectGroup AND Occurrence.IdSubjectSubGroup = SubjectSubGroup.IdSubjectSubGroup
+	INNER JOIN SubjectDetail WITH (NOLOCK) ON Occurrence.IdSubjectGroup = SubjectDetail.IdSubjectGroup AND Occurrence.IdSubjectSubGroup = SubjectDetail.IdSubjectSubGroup AND Occurrence.IdSubjectDetail = SubjectDetail.IdSubjectDetail
+	INNER JOIN
+		(
+			SELECT
+				MAX(IdOccurrenceUpdate) IdOccurrenceUpdate,
+				IdCustomer
+			FROM
+				OccurrenceUpdate WITH (NOLOCK)
+			INNER JOIN Occurrence WITH (NOLOCK) ON OccurrenceUpdate.IdOccurrence = Occurrence.IdOccurrence
+			GROUP BY
+				IdCustomer
+		) UPDATES ON UPDATES.IdCustomer = Occurrence.IdCustomer
+	INNER JOIN OccurrenceUpdate WITH (NOLOCK) ON UPDATES.IdOccurrenceUpdate = OccurrenceUpdate.IdOccurrenceUpdate
+	ORDER BY
+		Occurrence.OccurrenceDate DESC
+END
