@@ -193,6 +193,7 @@
     <Content Include="Views\Ocorrencia\Listar.cshtml" />
     <Content Include="Views\Ocorrencia\NovaOcorrencia.cshtml" />
     <Content Include="Views\Ocorrencia\AcessarOcorrencia.cshtml" />
+    <Content Include="Views\Ocorrencia\NovaAtualizacao.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

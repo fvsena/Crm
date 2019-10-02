@@ -3,7 +3,10 @@
     ViewBag.Title = $"Detalhe da Ocorrência: {Model.Codigo.ToString()}";
 }
 
-<div class="card">
+<div class="card mt-4">
+    <div class="card-header bg-primary text-white">
+        Ocorrência #@Model.Codigo
+    </div>
     <div class="card-body">
         <div class="form-row">
             <div class="form-group col-4">
@@ -21,3 +24,42 @@
         </div>
     </div>
 </div>
+
+<div class="card">
+    <div class="card-header bg-dark text-white">Ações</div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-4">
+                @Html.ActionLink("Voltar","Listar","Ocorrencia", new { @class= "btn btn-primary btn-block" })
+            </div>
+            <div class="col-4">
+                @Html.ActionLink("Nova Atualização", "NovaAtualizacao", "Ocorrencia", new { Model.Codigo }, new { @class = "btn btn-primary btn-block" })
+            </div>
+            <div class="col-4">
+                @Html.ActionLink("Encerrar Ocorrência", "EncerrarOcorrencia", "Ocorrencia", new { @class = "btn btn-primary btn-block" })
+            </div>
+        </div>
+    </div>
+</div>
+
+<table class="table table-bordered">
+    <thead>
+        <th scope="col">#</th>
+        <th scope="col">Data</th>
+        <th scope="col">Agente</th>
+        <th scope="col">Tipo de Atualização</th>
+        <th scope="col">Mensagem</th>
+    </thead>
+    <tbody>
+        @foreach (Crm.Models.AtualizacaoOcorrencia atualizacao in Model.Atualizacoes)
+        {
+            <tr>
+                <td>@atualizacao.Codigo</td>
+                <td>@atualizacao.DataAtualizacao.ToString("dd/MM/yyyy hh:mm")</td>
+                <td>@atualizacao.NomeAgente</td>
+                <td>@atualizacao.TipoAtualizacao</td>
+                <td>@atualizacao.Mensagem</td>
+            </tr>
+        }
+    </tbody>
+</table>

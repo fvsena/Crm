@@ -67,5 +67,10 @@ namespace Crm.Controllers
             Ocorrencia.GravarOcorrencia();
             return RedirectToAction("Listar");
         }
+
+        public ActionResult NovaAtualizacao(int Codigo)
+        {
+            return View();
+        }
     }
 }
