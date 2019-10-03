@@ -66,6 +66,10 @@ namespace Crm.Models
 
         public void GravarSubGrupoOcorrencia()
         {
+            if (this.CodigoGrupo.Equals(0))
+            {
+                return;
+            }
             List<SqlParameter> parametros = new List<SqlParameter>();
             parametros.Add(new SqlParameter("@Grupo", this.CodigoGrupo));
             parametros.Add(new SqlParameter("@SubGrupo", this.SubGrupo));
@@ -74,6 +78,10 @@ namespace Crm.Models
 
         public void GravarDetalheOcorrencia()
         {
+            if (this.CodigoGrupo.Equals(0) || this.CodigoSubGrupo.Equals(0))
+            {
+                return;
+            }
             List<SqlParameter> parametros = new List<SqlParameter>();
             parametros.Add(new SqlParameter("@Grupo", this.CodigoGrupo));
             parametros.Add(new SqlParameter("@SubGrupo", this.CodigoSubGrupo));

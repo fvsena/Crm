@@ -167,5 +167,24 @@ namespace Crm.Models
             }
             return ocorrencia;
         }
+
+        public void GravarAtualizacao(int idTipoAtualizacao, string mensagem)
+        {
+            if (this.Codigo.Equals(0) || idTipoAtualizacao.Equals(0) || string.IsNullOrWhiteSpace(mensagem))
+            {
+                return;
+            }
+            List<SqlParameter> parametros = new List<SqlParameter>();
+            parametros.Add(new SqlParameter("@IdOcorrencia", this.Codigo));
+            parametros.Add(new SqlParameter("@IdAgente", this.IdAgente));
+            parametros.Add(new SqlParameter("@IdTipoAtualizacao", idTipoAtualizacao));
+            parametros.Add(new SqlParameter("@Mensagem", mensagem));
+            DataSet ds = ExecuteDataset(csCrm, "sp_GravarAtualizacao", parametros);
+            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+            {
+                string Erro = ds.Tables[0].Rows[0]["ErrorMessage"].ToString();
+                throw new Exception(Erro);
+            }
+        }
     }
 }

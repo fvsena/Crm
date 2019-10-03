@@ -13,11 +13,13 @@ namespace Crm.Controllers
     {
         Ocorrencia Ocorrencia = new Ocorrencia();
 
+        [AuthFilter]
         public ActionResult Index()
         {
             return View();
         }
 
+        [AuthFilter]
         public ActionResult Listar()
         {
             return View("Listar", Ocorrencia.ObterOcorrencias());
@@ -31,8 +33,13 @@ namespace Crm.Controllers
             return View("AcessarOcorrencia", Ocorrencia);
         }
 
+        [AuthFilter]
         public ActionResult NovaOcorrencia()
         {
+            if (Session["CodigoCliente"] == null)
+            {
+                return RedirectToAction("Index", "Cliente");
+            }
             Ocorrencia.CarregaGrupos();
             return View("NovaOcorrencia", Ocorrencia);
         }
@@ -56,6 +63,7 @@ namespace Crm.Controllers
             return JsonConvert.SerializeObject(Ocorrencia.Detalhes);
         }
 
+        [AuthFilter]
         public ActionResult GravarOcorrencia(string Grupos, string SubGrupos, string Detalhes, string Descricao)
         {
             Ocorrencia.IdAgente = Convert.ToInt32(Session["CodigoUsuario"].ToString());
@@ -68,17 +76,27 @@ namespace Crm.Controllers
             return RedirectToAction("Listar");
         }
 
+        [AuthFilter]
         public ActionResult NovaAtualizacao(int Codigo)
         {
             this.Ocorrencia.Codigo = Codigo;
             return View("NovaAtualizacao", this.Ocorrencia);
         }
 
-        public ActionResult GravarAtualizacao(string CodigoOcorrencia = null, string TipoAtualizacao = null, string Mensagem = null)
+        [AuthFilter]
+        public ActionResult GravarAtualizacao(string TipoAtualizacao, string Mensagem, string Codigo = "")
         {
+            if (string.IsNullOrWhiteSpace(Codigo))
+            {
+                return RedirectToAction("Listar", "Ocorrencia");
+            }
             var IdCliente = Session["CodigoCliente"];
             var NomeCliente = Session["NomeCliente"];
-            return RedirectToAction("AcessarOcorrencia", "Ocorrencia", new { IdCliente, NomeCliente });
+            Ocorrencia.Codigo = Convert.ToInt32(Codigo);
+            Ocorrencia.IdAgente = Convert.ToInt32(Session["CodigoUsuario"].ToString());
+            Ocorrencia.IdCliente = Convert.ToInt32(Session["CodigoCliente"].ToString());
+            Ocorrencia.GravarAtualizacao(Convert.ToInt32(TipoAtualizacao), Mensagem);
+            return RedirectToAction("Listar", "Ocorrencia");
         }
     }
 }
