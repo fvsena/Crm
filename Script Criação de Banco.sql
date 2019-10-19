@@ -1,6 +1,7 @@
---CREATE DATABASE Crm
---USE Crm
---ALTER AUTHORIZATION ON DATABASE::Crm TO sa
+CREATE DATABASE Crm
+GO
+USE Crm
+ALTER AUTHORIZATION ON DATABASE::Crm TO sa
 
 CREATE TABLE Customer
 	(
@@ -11,12 +12,12 @@ CREATE TABLE Customer
 		Gender CHAR(1) NOT NULL,
 		CustomerDate DATETIME NOT NULL
 	)
-
+GO
 ALTER TABLE Customer ADD CONSTRAINT PK_Customer PRIMARY KEY(IdCustomer)
 ALTER TABLE Customer ADD CONSTRAINT CH_GenderCustomer CHECK (Gender IN ('M','F','I'))
 ALTER TABLE Customer ADD CONSTRAINT CH_BirthDateCustomer CHECK (BirthDate < GETDATE())
 ALTER TABLE Customer ADD CONSTRAINT UN_DocumentNumberCustomer UNIQUE (DocumentNumber)
-
+GO
 CREATE TABLE Address
 	(
 		IdAddress INT IDENTITY NOT NULL,
@@ -30,10 +31,10 @@ CREATE TABLE Address
 		FS CHAR(2) NOT NULL,
 		AddressDate DATETIME NOT NULL
 	)
-
+GO
 ALTER TABLE Address ADD CONSTRAINT PK_Address PRIMARY KEY(IdAddress)
 ALTER TABLE Address ADD CONSTRAINT FK_Address_Customer FOREIGN KEY(IdCustomer) REFERENCES Customer(IdCustomer)
-
+GO
 CREATE TABLE Telephone
 	(
 		IdTelephone INT IDENTITY NOT NULL,
@@ -41,28 +42,28 @@ CREATE TABLE Telephone
 		PhoneNumber VARCHAR(11) NOT NULL,
 		Status BIT NOT NULL
 	)
-
+GO
 ALTER TABLE Telephone ADD CONSTRAINT PK_Telephone PRIMARY KEY(IdTelephone)
 ALTER TABLE Telephone ADD CONSTRAINT FK_Telephone_Customer FOREIGN KEY(IdCustomer) REFERENCES Customer(IdCustomer)
-
+GO
 CREATE TABLE SubjectGroup
 	(
 		IdSubjectGroup INT IDENTITY NOT NULL,
 		Name VARCHAR(50) NOT NULL
 	)
-
+GO
 ALTER TABLE SubjectGroup ADD CONSTRAINT PK_SubjectGroup PRIMARY KEY(IdSubjectGroup)
-
+GO
 CREATE TABLE SubjectSubGroup
 	(
 		IdSubjectSubGroup INT NOT NULL,
 		IdSubjectGroup INT NOT NULL,
 		Name VARCHAR(50) NOT NULL
 	)
-
+GO
 ALTER TABLE SubjectSubGroup ADD CONSTRAINT PK_SubjectSubGroup PRIMARY KEY (IdSubjectSubGroup, IdSubjectGroup)
 ALTER TABLE SubjectSubGroup ADD CONSTRAINT FK_SubjectSubGroup_SubjectGroup FOREIGN KEY(IdSubjectGroup) REFERENCES SubjectGroup(IdSubjectGroup)
-
+GO
 CREATE TABLE SubjectDetail
 	(
 		IdSubjectDetail INT NOT NULL,
@@ -70,10 +71,10 @@ CREATE TABLE SubjectDetail
 		IdSubjectGroup INT NOT NULL,
 		Name VARCHAR(100) NOT NULL
 	)
-
+GO
 ALTER TABLE SubjectDetail ADD CONSTRAINT PK_SubjectDetail PRIMARY KEY(IdSubjectGroup, IdSubjectSubGroup, IdSubjectDetail)
 ALTER TABLE SubjectDetail ADD CONSTRAINT FK_SubjectDetail_SubjectSubGroup FOREIGN KEY(IdSubjectSubGroup, IdSubjectGroup) REFERENCES SubjectSubGroup(IdSubjectSubGroup, IdSubjectGroup)
-
+GO
 CREATE TABLE Agent
 	(
 		IdAgent INT IDENTITY NOT NULL,
@@ -82,9 +83,11 @@ CREATE TABLE Agent
 		Password VARCHAR(255),
 		Status BIT NOT NULL
 	)
-
+GO
 ALTER TABLE Agent ADD CONSTRAINT PK_Agent PRIMARY KEY(IdAgent)
-
+GO
+INSERT INTO Agent VALUES ('admin','admin.crm','123',1)
+GO
 CREATE TABLE Contact
 	(
 		IdContact INT IDENTITY NOT NULL,
@@ -93,19 +96,23 @@ CREATE TABLE Contact
 		ContactDate DATETIME NOT NULL,
 		Detail TEXT NOT NULL
 	)
-
+GO
 ALTER TABLE Contact ADD CONSTRAINT PK_Contact PRIMARY KEY(IdContact)
 ALTER TABLE Contact ADD CONSTRAINT FK_Contact_Customer FOREIGN KEY(IdCustomer) REFERENCES Customer(IdCustomer)
 ALTER TABLE Contact ADD CONSTRAINT FK_Contact_Agent FOREIGN KEY(IdAgent) REFERENCES Agent(IdAgent)
-
+GO
 CREATE TABLE OccurrenceStatus
 	(
 		IdOccurrenceStatus INT IDENTITY NOT NULL,
 		Name VARCHAR(50) NOT NULL
 	)
-
+GO
 ALTER TABLE OccurrenceStatus ADD CONSTRAINT PK_OccurrenceStatus PRIMARY KEY(IdOccurrenceStatus)
-
+GO
+INSERT INTO OccurrenceStatus VALUES ('Pendente')
+INSERT INTO OccurrenceStatus VALUES ('Em andamento')
+INSERT INTO OccurrenceStatus VALUES ('Encerrado')
+GO
 CREATE TABLE Occurrence
 	(
 		IdOccurrence INT IDENTITY NOT NULL,
@@ -117,21 +124,25 @@ CREATE TABLE Occurrence
 		IdSubjectDetail INT NOT NULL,
 		IdOccurrenceStatus INT NOT NULL
 	)
-
+GO
 ALTER TABLE Occurrence ADD CONSTRAINT PK_Occurrence PRIMARY KEY(IdOccurrence)
 ALTER TABLE Occurrence ADD CONSTRAINT FK_Occurrence_Customer FOREIGN KEY(IdCustomer) REFERENCES Customer(IdCustomer)
 ALTER TABLE Occurrence ADD CONSTRAINT FK_Occurrence_Agent FOREIGN KEY(IdAgent) REFERENCES Agent(IdAgent)
 ALTER TABLE Occurrence ADD CONSTRAINT FK_Occurrence_SubjectDetail FOREIGN KEY(IdSubjectGroup, IdSubjectSubGroup, IdSubjectDetail) REFERENCES SubjectDetail(IdSubjectGroup, IdSubjectSubGroup, IdSubjectDetail)
 ALTER TABLE Occurrence ADD CONSTRAINT FK_Occurrence_OccurrenceStatus FOREIGN KEY(IdOccurrenceStatus) REFERENCES OccurrenceStatus(IdOccurrenceStatus)
-
+GO
 CREATE TABLE OccurrenceUpdateType
 	(
 		IdOccurrenceUpdateType INT IDENTITY NOT NULL,
 		Name VARCHAR(50) NOT NULL
 	)
-
+GO
 ALTER TABLE OccurrenceUpdateType ADD CONSTRAINT PK_OccurrenceUpdateType PRIMARY KEY(IdOccurrenceUpdateType)
-
+GO
+INSERT INTO OccurrenceUpdateType VALUES ('Abertura')
+INSERT INTO OccurrenceUpdateType VALUES ('Atualização')
+INSERT INTO OccurrenceUpdateType VALUES ('Finalização')
+GO
 CREATE TABLE OccurrenceUpdate
 	(
 		IdOccurrenceUpdate INT IDENTITY NOT NULL,
@@ -141,20 +152,20 @@ CREATE TABLE OccurrenceUpdate
 		UpdateDate DATETIME NOT NULL,
 		UpdateMessage TEXT,
 	)
-
+GO
 ALTER TABLE OccurrenceUpdate ADD CONSTRAINT PK_OccurrenceUpdate PRIMARY KEY(IdOccurrenceUpdate)
 ALTER TABLE OccurrenceUpdate ADD CONSTRAINT FK_OccurrenceUpdate_OccurrenceUpdateType FOREIGN KEY(IdOccurrenceUpdateType) REFERENCES OccurrenceUpdateType(IdOccurrenceUpdateType)
 ALTER TABLE OccurrenceUpdate ADD CONSTRAINT FK_OccurrenceUpdate_Occurrence FOREIGN KEY(IdOccurrence) REFERENCES Occurrence(IdOccurrence)
 ALTER TABLE OccurrenceUpdate ADD CONSTRAINT FK_OccurrenceUpdate_Agent FOREIGN KEY(IdAgent) REFERENCES Agent(IdAgent)
-
+GO
 CREATE TABLE SchedulingType
 	(
 		IdSchedulingType INT IDENTITY NOT NULL,
 		Name VARCHAR(50) NOT NULL
 	)
-
+GO
 ALTER TABLE SchedulingType ADD CONSTRAINT PK_SchedulingType PRIMARY KEY(IdSchedulingType)
-
+GO
 CREATE TABLE Scheduling
 	(
 		IdScheduling INT IDENTITY NOT NULL,
@@ -166,14 +177,13 @@ CREATE TABLE Scheduling
 		SchedulingDateRealized DATETIME,
 		Status BIT NOT NULL
 	)
-
+GO
 ALTER TABLE Scheduling ADD CONSTRAINT PK_Scheduling PRIMARY KEY(IdScheduling)
 ALTER TABLE Scheduling ADD CONSTRAINT FK_Scheduling_SchedulingType FOREIGN KEY(IdSchedulingType) REFERENCES SchedulingType(IdSchedulingType)
 ALTER TABLE Scheduling ADD CONSTRAINT FK_Scheduling_Occurrence FOREIGN KEY(IdOccurrence) REFERENCES Occurrence(IdOccurrence)
 ALTER TABLE Scheduling ADD CONSTRAINT FK_Scheduling_Agent FOREIGN KEY(IdAgent) REFERENCES Agent(IdAgent)
-
 GO
-ALTER PROCEDURE sp_GravarCliente
+CREATE PROCEDURE sp_GravarCliente
 	(
 		@Nome VARCHAR(100),
 		@Genero CHAR(1),
@@ -229,8 +239,8 @@ BEGIN
 			ERROR_MESSAGE() AS ErrorMessage
 	END CATCH
 END
-
-ALTER PROCEDURE sp_GravarEndereco
+GO
+CREATE PROCEDURE sp_GravarEndereco
 	(
 		@IdCliente INT,
 		@Cep VARCHAR(20),
@@ -299,7 +309,7 @@ BEGIN
 		ROLLBACK TRANSACTION
 	END CATCH
 END
-
+GO
 CREATE PROCEDURE sp_GravarContato
 	(
 		@IdCliente INT,
@@ -332,7 +342,7 @@ BEGIN
 		ROLLBACK TRANSACTION
 	END CATCH
 END
-
+GO
 CREATE PROCEDURE sp_ObterClientes
 AS
 BEGIN
@@ -345,8 +355,8 @@ BEGIN
 	FROM
 		Customer WITH (NOLOCK)
 END
-
-ALTER PROCEDURE sp_ObterContatos	
+GO
+CREATE PROCEDURE sp_ObterContatos	
 	(
 		@IdCliente INT
 	)
@@ -365,7 +375,7 @@ BEGIN
 	WHERE
 		IdCustomer = @IdCliente
 END
-
+GO
 CREATE PROCEDURE sp_ObterCliente
 	(
 		@IdCliente INT
@@ -383,7 +393,8 @@ BEGIN
 	WHERE
 		IdCustomer = @IdCliente
 END
-ALTER PROCEDURE sp_GravarTelefone
+GO
+CREATE PROCEDURE sp_GravarTelefone
 	(
 		@IdCliente INT,
 		@Telefone VARCHAR(11)
@@ -411,6 +422,7 @@ BEGIN
 			1
 		)
 END
+GO
 CREATE PROCEDURE sp_ObterTelefones
 	(
 		@IdCliente INT
@@ -424,7 +436,7 @@ BEGIN
 	WHERE
 		IdCustomer = @IdCliente
 END
-
+GO
 CREATE PROCEDURE sp_ObterEndereco
 	(
 		@IdCliente INT
@@ -444,7 +456,7 @@ BEGIN
 	WHERE
 		IdCustomer = @IdCliente
 END
-
+GO
 CREATE PROCEDURE sp_ValidarLogin
 	(
 		@Login VARCHAR(20),
@@ -460,18 +472,7 @@ BEGIN
 		Login = @Login
 		AND Password = @Senha
 END
-
-SELECT
-	SubjectDetail.IdSubjectGroup IdGrupo,
-	SubjectDetail.IdSubjectSubGroup IdSubGrupo,
-	SubjectDetail.IdSubjectDetail IdDetalhe,
-	SubjectGroup.Name Grupo,
-	SubjectSubGroup.Name SubGrupo,
-	SubjectDetail.Name Detalhe
-FROM SubjectDetail WITH (NOLOCK)
-INNER JOIN SubjectGroup WITH (NOLOCK) ON SubjectDetail.IdSubjectGroup = SubjectGroup.IdSubjectGroup
-INNER JOIN SubjectSubGroup WITH (NOLOCK) ON SubjectDetail.IdSubjectGroup = SubjectSubGroup.IdSubjectGroup AND SubjectDetail.IdSubjectSubGroup = SubjectSubGroup.IdSubjectSubGroup
-
+GO
 CREATE PROCEDURE sp_ObterGrupoOcorrencia
 AS
 BEGIN
@@ -481,8 +482,8 @@ BEGIN
 	FROM
 		SubjectGroup WITH (NOLOCK)
 END
-
-ALTER PROCEDURE sp_ObterSubGrupoOcorrencia
+GO
+CREATE PROCEDURE sp_ObterSubGrupoOcorrencia
 	(
 		@IdGrupo INT
 	)
@@ -496,8 +497,8 @@ BEGIN
 	WHERE
 		IdSubjectGroup = @IdGrupo
 END
-
-ALTER PROCEDURE sp_ObterDetalheOcorrencia
+GO
+CREATE PROCEDURE sp_ObterDetalheOcorrencia
 	(
 		@IdGrupo INT,
 		@IdSubGrupo INT
@@ -513,19 +514,7 @@ BEGIN
 		IdSubjectGroup = @IdGrupo
 		AND IdSubjectSubGroup = @IdSubGrupo
 END
-
-SELECT * FROM Customer	
-SELECT * FROM Address
-SELECT * FROM Telephone
-SELECT * FROM Agent
-SELECT * FROM SubjectGroup
-SELECT * FROM SubjectSubGroup
-SELECT * FROM SubjectDetail
-
---INSERT INTO Telephone VALUES (1,'11989287765',1)
-
-
-
+GO
 CREATE PROCEDURE sp_GravarGrupoOcorrencia
 	(
 		@Grupo VARCHAR(50)
@@ -549,8 +538,8 @@ BEGIN
 			@Grupo
 		)
 END
-
-ALTER PROCEDURE sp_GravarSubGrupoOcorrencia
+GO
+CREATE PROCEDURE sp_GravarSubGrupoOcorrencia
 	(
 		@Grupo INT,
 		@SubGrupo VARCHAR(50)
@@ -581,8 +570,8 @@ BEGIN
 			@SubGrupo
 		)
 END
-
-ALTER PROCEDURE sp_GravarDetalheOcorrencia
+GO
+CREATE PROCEDURE sp_GravarDetalheOcorrencia
 	(
 		@Grupo INT,
 		@SubGrupo INT,
@@ -616,12 +605,7 @@ BEGIN
 			@Detalhe
 		)
 END
-
-SELECT * FROM Occurrence
-SELECT * FROM OccurrenceStatus
-SELECT * FROM OccurrenceUpdate
-SELECT * FROM OccurrenceUpdateType
-
+GO
 CREATE PROCEDURE sp_GravarOcorrencia
 	(
 		@IdCliente INT,
@@ -683,8 +667,8 @@ BEGIN
 	END CATCH
 	
 END
-
-ALTER PROCEDURE sp_ObterOcorrencias
+GO
+CREATE PROCEDURE sp_ObterOcorrencias
 	(
 		@Quantidade INT = 10
 	)
@@ -721,8 +705,8 @@ BEGIN
 	ORDER BY
 		Occurrence.OccurrenceDate DESC
 END
-
-ALTER PROCEDURE sp_BuscarOcorrencia
+GO
+CREATE PROCEDURE sp_BuscarOcorrencia
 	(
 		@Codigo INT
 	)
@@ -761,7 +745,7 @@ BEGIN
 	WHERE
 		OccurrenceUpdate.IdOccurrence = @Codigo
 END
-
+GO
 CREATE PROCEDURE sp_GravarAtualizacao
 	(
 		@IdOcorrencia INT,
